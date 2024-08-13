@@ -22,7 +22,7 @@ pub fn main() !void
 
     for (0..50) |_| { line = try processLine(line); }
     
-    print ("{}\n", .{ line.items.len });
+    print ("answer: {}\n", .{ line.items.len });
 }
 
 
