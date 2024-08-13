@@ -38,7 +38,7 @@ pub fn main() !void
     
     while (lines.next()) | line | { try processInputLine(line); }
     
-    for (1..maxTime+1) | _ | { updateByTick(); }
+    for (0..maxTime) | _ | { updateByTick(); }
     
     var bestPoints: u32 = 0;
     
@@ -109,11 +109,11 @@ fn updateReindeer(reindeer: *Reindeer) void
     
     reindeer.elapsedTime += 1;
     
-    var tmaxTime_: u32 = reindeer.restTime;
+    var maxTime_: u32 = reindeer.restTime;
     
-    if (reindeer.isFlying) { reindeer.distance += reindeer.speed; tmaxTime_ = reindeer.flyTime; }
+    if (reindeer.isFlying) { reindeer.distance += reindeer.speed; maxTime_ = reindeer.flyTime; }
         
-    if (reindeer.elapsedTime == tmaxTime_)
+    if (reindeer.elapsedTime == maxTime_)
     {
         reindeer.elapsedTime = 0;
         reindeer.isFlying = ! reindeer.isFlying;
