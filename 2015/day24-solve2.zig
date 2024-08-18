@@ -185,8 +185,6 @@ fn otherCompartmentsOk2(taken: []u32, packages: std.ArrayList(u32), sum: u32) !b
         
         if (newSum > target) { continue; }
         
-        if (packages.items.len + 1 > maxNumberOfPackages) { return false; } // next loop would have too many packages too
-        
         var newPackages = try std.ArrayList(u32).initCapacity(allocator, 30);
         for (packages.items) | item | { try newPackages.append(item); }
         try newPackages.append(weight);
@@ -238,7 +236,6 @@ fn otherCompartmentsOk4(taken: []u32, taken2: []u32, packages: std.ArrayList(u32
         if (newSum > target) { continue; }
         
         // newSum < target
-        if (packages.items.len + 1 > maxNumberOfPackages) { return false; } // next loop would have too many packages too
         
         var newPackages = try std.ArrayList(u32).initCapacity(allocator, 30);
         for (packages.items) | item | { try newPackages.append(item); }
