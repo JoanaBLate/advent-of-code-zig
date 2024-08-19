@@ -103,11 +103,11 @@ fn search() !void
         node.sum = weights[index];
         node.packages = 1;
      
-        try searchFirstCompartment(&node);
+        try searchFirstCompartment(node);
     }
 }
 
-fn searchFirstCompartment(node: *Node) !void
+fn searchFirstCompartment(node: Node) !void
 {
     const start: usize = node.indexOfLastUsed + 1; // this grants [2,1,3] will never happen
     if (start >= weights.len) { return; }
@@ -130,16 +130,16 @@ fn searchFirstCompartment(node: *Node) !void
         newNode.sum = sum;
         newNode.packages = packages;
         
-        if (sum < target) { try searchFirstCompartment(&newNode); continue; }
+        if (sum < target) { try searchFirstCompartment(newNode); continue; }
         
         // newSum == target
-        try evaluateNode(&newNode);
+        try evaluateNode(newNode);
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
         
-fn evaluateNode(node: *Node) !void
+fn evaluateNode(node: Node) !void
 {
     const qe = calcQuantumEntanglement(node);
 
@@ -166,7 +166,7 @@ fn evaluateNode(node: *Node) !void
 // just need to check the second one! 
 // (the third one must be ok when the second is ok)
 
-fn otherCompartmentsWillBeOk(node: *Node) bool 
+fn otherCompartmentsWillBeOk(node: Node) bool 
 {
     for (0..weights.len) | index | 
     {
@@ -207,7 +207,7 @@ fn createNode() !Node
     return Node{ .useds = list.items };
 }
 
-fn calcQuantumEntanglement(node: *Node) usize
+fn calcQuantumEntanglement(node: Node) usize
 {
    var qe: usize = 1;
 
@@ -218,16 +218,4 @@ fn calcQuantumEntanglement(node: *Node) usize
     return qe;
 }
 
-fn displayNode(node: *Node) void
-{
-    print("sum: {d} ", .{ node.sum });
-    
-    for (0..weights.len) | index |
-    {
-        if (! node.useds[index]) { print("    ", .{}); continue; }
-    
-        print("  {d}", .{ weights[index] });
-    }
-    print("\n", .{}); 
-}
 
