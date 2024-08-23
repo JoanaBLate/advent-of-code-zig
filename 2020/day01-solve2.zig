@@ -1,4 +1,4 @@
-//! solution for https://adventofcode.com/2020/day/01 part 1
+//! solution for https://adventofcode.com/2020/day/01 part 2
 
 const std = @import("std");
 
@@ -37,13 +37,16 @@ fn getResult(numbers: std.ArrayList(u32)) u32
     {
         for (indexA+1..numbers.items.len) | indexB |
         {
-            const numberA = numbers.items[indexA];
-            const numberB = numbers.items[indexB];
-            
-            if (numberA + numberB == 2020) { return numberA * numberB; }
+            for (indexB+1..numbers.items.len) | indexC |
+            {
+                const numberA = numbers.items[indexA];
+                const numberB = numbers.items[indexB];
+                const numberC = numbers.items[indexC];
+                
+                if (numberA + numberB + numberC == 2020) { return numberA * numberB * numberC; }
+            }
         }
-    }  
-    
-    unreachable;      
+    }        
+    unreachable;
 }
 
