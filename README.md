@@ -3,7 +3,8 @@ Clear and simple solutions for the Advent Of Code puzzles in Zig.
 <br><br>
 *No advanced Math is used!*
 <br><br>
-Year 2015: using Zig version 0.13.0 
+Year 2015: using Zig version 0.13.0
+
 Year 2020: using Zig version 0.13.0 
 
 
