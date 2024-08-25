@@ -94,7 +94,7 @@ fn fillNodesWith(baseIndex: usize) void
 {       
     const baseAdapter = adapters.items[baseIndex];
     
-    const maxIndex:usize = adapters.items.len - 1;
+    const maxIndex: usize = adapters.items.len - 1;
 
     for (baseIndex+1..baseIndex+4) | index |
     {
