@@ -7,8 +7,14 @@ const print = std.debug.print;
 var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
 const allocator = arena.allocator();
 
-var adapters: std.ArrayList(usize) = undefined;
-var nodes: std.ArrayList(usize) = undefined; // stores the number of many ways to reach this node/adapter
+
+const Adapter = struct
+{
+    jolts: u32,
+    paths: usize = 0, // the number of paths to reach this adapter
+};
+
+var adapters: std.ArrayList(Adapter) = undefined;
 
 
 pub fn main() !void
@@ -21,38 +27,42 @@ pub fn main() !void
     
     var rawLines = std.mem.splitSequence(u8, data, "\n"); 
     
-    adapters = try std.ArrayList(usize).initCapacity(allocator, 150);
-    nodes = try std.ArrayList(usize).initCapacity(allocator, 150);
-    
-    try adapters.append(0); // the zero start will
-    try nodes.append(1);    // easy the search later
+    var rawAdapters = try std.ArrayList(u32).initCapacity(allocator, 150);
     
     while (rawLines.next()) | rawLine | 
     { 
         const line = std.mem.trimRight(u8, rawLine, " ");
        
-        const number: usize = try std.fmt.parseInt(usize, line, 10);
+        const number: u32 = try std.fmt.parseInt(u32, line, 10);
        
-        try adapters.append(number);
-        try nodes.append(0);
+        try rawAdapters.append(number);
     }
     
-    sort();
+    const array = rawAdapters.items;
+
+    sort(array);
+
+    adapters = try std.ArrayList(Adapter).initCapacity(allocator, 150);
     
+    try adapters.append(Adapter { .jolts = 0, . paths = 1 }); // the zero start will easy the search
+    
+    for (array) | jolts | { try adapters.append(Adapter{ .jolts = jolts }); }
+
     fillNodes();
+
+    const lastAdapter = adapters.getLast();
     
-    print("answer: {}\n", .{ nodes.getLast() });
+    print("answer: {}\n", .{ lastAdapter.paths });
 }
 
 // sort ///////////////////////////////////////////////////////////////////////
 
-fn sort() void
-{
-    const array = adapters.items[0..];    
+fn sort(array: []u32) void
+{   
     while ( sortOnce(array)) { }
 }
 
-fn sortOnce(array: []usize) bool
+fn sortOnce(array: []u32) bool
 {
     var changed = false;
     
@@ -60,8 +70,8 @@ fn sortOnce(array: []usize) bool
     {
         for (indexA..array.len) | indexB |
         {
-            const a: usize = array[indexA];
-            const b: usize = array[indexB];
+            const a = array[indexA];
+            const b = array[indexB];
             
             if (a <= b) { continue; }
 
@@ -82,20 +92,19 @@ fn fillNodes() void
 
 fn fillNodesWith(baseIndex: usize) void
 {       
-    const baseValue: usize = adapters.items[baseIndex];
-    const baseNode:  usize = nodes.items[baseIndex];
+    const baseAdapter = adapters.items[baseIndex];
     
     const maxIndex:usize = adapters.items.len - 1;
-    
+
     for (baseIndex+1..baseIndex+4) | index |
     {
         if (index > maxIndex) { return; }
         
-        const value = adapters.items[index];
+        var currentAdapter = &adapters.items[index];
+
+        if (currentAdapter.jolts - baseAdapter.jolts > 3) { return; }
         
-        if (value - baseValue > 3) { return; }
-        
-        nodes.items[index] += baseNode;
+        currentAdapter.paths += baseAdapter.paths;
     }
 }
 
